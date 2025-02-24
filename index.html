@@ -22,6 +22,7 @@
         width: 250px;
         height: 500px;
         background-color: #111111; /* Temporary background */
+        display: none; /* Start hidden by default */
       }
       #unity-container {
         position: relative;
@@ -39,9 +40,6 @@
            style="display:inline-block;width:250px;height:500px"
            data-ad-client="ca-pub-8395518696558482"
            data-ad-slot="9786474229"></ins>
-      <script>
-        (adsbygoogle = window.adsbygoogle || []).push({});
-      </script>
     </div>
     <div id="loading-cover">
       <div class="spinner"></div>
@@ -81,28 +79,41 @@
       };
       document.body.appendChild(script);
 
-      // AdSense debugging
+      // AdSense initialization and debugging (no initial push)
       window.addEventListener('load', () => {
         if (!window.adsbygoogle) {
           console.log("AdSense script failed to load.");
         } else {
           console.log("AdSense script loaded.");
-          try {
-            (adsbygoogle = window.adsbygoogle || []).push({});
-            console.log("Ad request pushed successfully.");
-          } catch (e) {
-            console.log("AdSense push failed: ", e);
-          }
+          // No initial .push({}) here—ad requests will only happen in showAd()
         }
       });
     </script>
     <script>
       function showAd() {
-        document.getElementById("adContainer").style.visibility = "visible";
+        // Hide the ad container first to ensure any existing ad is removed
+        hideAd();
+
+        const adContainer = document.getElementById("adContainer");
+        adContainer.style.display = "block"; // Show the container
+
+        if (window.adsbygoogle) {
+          try {
+            // Request a new ad
+            (adsbygoogle = window.adsbygoogle || []).push({});
+            console.log("New ad requested on showAd().");
+          } catch (e) {
+            console.log("AdSense push failed in showAd(): ", e);
+          }
+        } else {
+          console.log("AdSense not loaded when calling showAd().");
+        }
       }
 
       function hideAd() {
-        document.getElementById("adContainer").style.visibility = "hidden";
+        const adContainer = document.getElementById("adContainer");
+        adContainer.style.display = "none"; // Hide the container
+        // No ad request needed here; just hide the container
       }
     </script>
   </body>
